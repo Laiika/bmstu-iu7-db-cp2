@@ -395,13 +395,13 @@ func TestMemberService_DeleteMember(t *testing.T) {
 
 			// run test
 			err := s.DeleteMember(tc.args.ctx, tc.args.client, tc.args.id)
+			assert.Equal(t, tc.want, err)
 			if tc.wantErr {
 				assert.Error(t, err)
 				return
 			}
 
 			assert.NoError(t, err)
-			assert.Equal(t, tc.want, err)
 		})
 	}
 }

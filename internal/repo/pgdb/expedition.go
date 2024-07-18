@@ -38,102 +38,6 @@ func (r *ExpeditionRepo) GetExpeditionById(ctx context.Context, client any, id i
 	return &exp, nil
 }
 
-func (r *ExpeditionRepo) GetLeaderExpeditions(ctx context.Context, client any, leaderId int) (entity.Expeditions, error) {
-	pgClient := client.(postgres.Client)
-	q := `
-		SELECT ex.id, ex.location_id, ex.start_date, ex.end_date
-		FROM expeditions ex
-		JOIN expeditions_leaders el ON el.expedition_id = ex.id
-		WHERE el.leader_id = $1
-	`
-	rows, err := pgClient.Query(ctx, q, leaderId)
-	if err != nil {
-		return nil, fmt.Errorf("ExpeditionRepo GetLeaderExpeditions: %v", err)
-	}
-
-	expeditions := make(entity.Expeditions, 0)
-	for rows.Next() {
-		var ex entity.Expedition
-
-		err = rows.Scan(&ex.Id, &ex.StartDate, &ex.EndDate)
-		if err != nil {
-			return nil, fmt.Errorf("ExpeditionRepo GetLeaderExpeditions: %v", err)
-		}
-
-		expeditions = append(expeditions, &ex)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("ExpeditionRepo GetLeaderExpeditions: %v", err)
-	}
-
-	return expeditions, nil
-}
-
-func (r *ExpeditionRepo) GetMemberExpeditions(ctx context.Context, client any, memberId int) (entity.Expeditions, error) {
-	pgClient := client.(postgres.Client)
-	q := `
-		SELECT ex.id, ex.location_id, ex.start_date, ex.end_date
-		FROM expeditions ex
-		JOIN expeditions_members em ON em.expedition_id = ex.id
-		WHERE em.member_id = $1
-	`
-	rows, err := pgClient.Query(ctx, q, memberId)
-	if err != nil {
-		return nil, fmt.Errorf("ExpeditionRepo GetMemberExpeditions: %v", err)
-	}
-
-	expeditions := make(entity.Expeditions, 0)
-	for rows.Next() {
-		var ex entity.Expedition
-
-		err = rows.Scan(&ex.Id, &ex.StartDate, &ex.EndDate)
-		if err != nil {
-			return nil, fmt.Errorf("ExpeditionRepo GetMemberExpeditions: %v", err)
-		}
-
-		expeditions = append(expeditions, &ex)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("ExpeditionRepo GetMemberrExpeditions: %v", err)
-	}
-
-	return expeditions, nil
-}
-
-func (r *ExpeditionRepo) GetCuratorExpeditions(ctx context.Context, client any, curatorId int) (entity.Expeditions, error) {
-	pgClient := client.(postgres.Client)
-	q := `
-		SELECT ex.id, ex.location_id, ex.start_date, ex.end_date
-		FROM expeditions ex
-		JOIN expeditions_curators ec ON ec.expedition_id = ex.id
-		WHERE ec.curator_id = $1
-	`
-	rows, err := pgClient.Query(ctx, q, curatorId)
-	if err != nil {
-		return nil, fmt.Errorf("ExpeditionRepo GetCuratorExpeditions: %v", err)
-	}
-
-	expeditions := make(entity.Expeditions, 0)
-	for rows.Next() {
-		var ex entity.Expedition
-
-		err = rows.Scan(&ex.Id, &ex.StartDate, &ex.EndDate)
-		if err != nil {
-			return nil, fmt.Errorf("ExpeditionRepo GetCuratorExpeditions: %v", err)
-		}
-
-		expeditions = append(expeditions, &ex)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("ExpeditionRepo GetCuratorExpeditions: %v", err)
-	}
-
-	return expeditions, nil
-}
-
 func (r *ExpeditionRepo) GetAllExpeditions(ctx context.Context, client any) (entity.Expeditions, error) {
 	pgClient := client.(postgres.Client)
 	q := `
@@ -192,7 +96,7 @@ func (r *ExpeditionRepo) UpdateExpeditionDates(ctx context.Context, client any, 
 	`
 	commandTag, err := pgClient.Exec(ctx, q, start, end, id)
 	if err != nil {
-		return fmt.Errorf("ExpeditionRepo DeleteExpedition: %v", err)
+		return fmt.Errorf("ExpeditionRepo UpdateExpedition: %v", err)
 	}
 	if commandTag.RowsAffected() != 1 {
 		return repoerrs.ErrNotFound

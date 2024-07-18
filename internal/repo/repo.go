@@ -40,9 +40,6 @@ type LocationRepo interface {
 
 type ExpeditionRepo interface {
 	GetExpeditionById(ctx context.Context, client any, id int) (*entity.Expedition, error)
-	GetLeaderExpeditions(ctx context.Context, client any, leaderId int) (entity.Expeditions, error)
-	GetMemberExpeditions(ctx context.Context, client any, memberId int) (entity.Expeditions, error)
-	GetCuratorExpeditions(ctx context.Context, client any, curatorId int) (entity.Expeditions, error)
 	GetAllExpeditions(ctx context.Context, client any) (entity.Expeditions, error)
 	CreateExpedition(ctx context.Context, client any, expedition *entity.Expedition) (int, error)
 	UpdateExpeditionDates(ctx context.Context, client any, id int, start time.Time, end time.Time) error

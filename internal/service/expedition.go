@@ -31,18 +31,6 @@ func (s *ExpeditionService) GetExpeditionById(ctx context.Context, client any, i
 	return expedition, nil
 }
 
-func (s *ExpeditionService) GetLeaderExpeditions(ctx context.Context, client any, leaderId int) (entity.Expeditions, error) {
-	return s.expeditionRepo.GetLeaderExpeditions(ctx, client, leaderId)
-}
-
-func (s *ExpeditionService) GetMemberExpeditions(ctx context.Context, client any, memberId int) (entity.Expeditions, error) {
-	return s.expeditionRepo.GetMemberExpeditions(ctx, client, memberId)
-}
-
-func (s *ExpeditionService) GetCuratorExpeditions(ctx context.Context, client any, curatorId int) (entity.Expeditions, error) {
-	return s.expeditionRepo.GetCuratorExpeditions(ctx, client, curatorId)
-}
-
 func (s *ExpeditionService) GetAllExpeditions(ctx context.Context, client any) (entity.Expeditions, error) {
 	return s.expeditionRepo.GetAllExpeditions(ctx, client)
 }
@@ -63,11 +51,11 @@ func (s *ExpeditionService) CreateExpedition(ctx context.Context, client any, in
 	return s.expeditionRepo.CreateExpedition(ctx, client, exp)
 }
 
-func (s *ExpeditionService) UpdateExpeditionDates(ctx context.Context, client any, input *entity.UpdateExpeditionInput) error {
-	start, _ := time.Parse("2006-01-02", input.StartDate)
-	end, _ := time.Parse("2006-01-02", input.EndDate)
+func (s *ExpeditionService) UpdateExpeditionDates(ctx context.Context, client any, id int, startDate string, endDate string) error {
+	start, _ := time.Parse("2006-01-02", startDate)
+	end, _ := time.Parse("2006-01-02", endDate)
 
-	err := s.expeditionRepo.UpdateExpeditionDates(ctx, client, input.Id, start, end)
+	err := s.expeditionRepo.UpdateExpeditionDates(ctx, client, id, start, end)
 	if err != nil {
 		if errors.Is(err, repoerrs.ErrNotFound) {
 			return ErrExpeditionNotFound

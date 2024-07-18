@@ -45,12 +45,9 @@ type Location interface {
 
 type Expedition interface {
 	GetExpeditionById(ctx context.Context, client any, id int) (*entity.Expedition, error)
-	GetLeaderExpeditions(ctx context.Context, client any, leaderId int) (entity.Expeditions, error)
-	GetMemberExpeditions(ctx context.Context, client any, memberId int) (entity.Expeditions, error)
-	GetCuratorExpeditions(ctx context.Context, client any, curatorId int) (entity.Expeditions, error)
 	GetAllExpeditions(ctx context.Context, client any) (entity.Expeditions, error)
 	CreateExpedition(ctx context.Context, client any, input *entity.CreateExpeditionInput) (int, error)
-	UpdateExpeditionDates(ctx context.Context, client any, input *entity.UpdateExpeditionInput) error
+	UpdateExpeditionDates(ctx context.Context, client any, id int, startDate string, endDate string) error
 	DeleteExpedition(ctx context.Context, client any, id int) error
 }
 

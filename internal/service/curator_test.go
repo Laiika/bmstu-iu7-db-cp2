@@ -314,7 +314,6 @@ func TestCuratorService_DeleteCurator(t *testing.T) {
 		name         string
 		args         args
 		mockBehavior MockBehavior
-		want         error
 		wantErr      bool
 	}{
 		{
@@ -328,7 +327,6 @@ func TestCuratorService_DeleteCurator(t *testing.T) {
 				m.EXPECT().DeleteCurator(args.ctx, args.client, args.id).
 					Return(nil)
 			},
-			want:    nil,
 			wantErr: false,
 		},
 		{
@@ -342,7 +340,6 @@ func TestCuratorService_DeleteCurator(t *testing.T) {
 				m.EXPECT().DeleteCurator(args.ctx, args.client, args.id).
 					Return(ErrCuratorNotFound)
 			},
-			want:    ErrCuratorNotFound,
 			wantErr: true,
 		},
 	}
@@ -368,7 +365,6 @@ func TestCuratorService_DeleteCurator(t *testing.T) {
 			}
 
 			assert.NoError(t, err)
-			assert.Equal(t, tc.want, err)
 		})
 	}
 }

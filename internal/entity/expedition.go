@@ -20,12 +20,6 @@ type CreateExpeditionInput struct {
 	EndDate    string `json:"end_date"`
 }
 
-type UpdateExpeditionInput struct {
-	Id        int    `json:"id"`
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
-}
-
 func (input *CreateExpeditionInput) IsValid() error {
 	var err error
 

@@ -240,7 +240,6 @@ func TestLocationService_DeleteLocation(t *testing.T) {
 		name         string
 		args         args
 		mockBehavior MockBehavior
-		want         error
 		wantErr      bool
 	}{
 		{
@@ -254,7 +253,6 @@ func TestLocationService_DeleteLocation(t *testing.T) {
 				m.EXPECT().DeleteLocation(args.ctx, args.client, args.id).
 					Return(nil)
 			},
-			want:    nil,
 			wantErr: false,
 		},
 		{
@@ -268,7 +266,6 @@ func TestLocationService_DeleteLocation(t *testing.T) {
 				m.EXPECT().DeleteLocation(args.ctx, args.client, args.id).
 					Return(ErrLocationNotFound)
 			},
-			want:    ErrLocationNotFound,
 			wantErr: true,
 		},
 	}
@@ -294,7 +291,6 @@ func TestLocationService_DeleteLocation(t *testing.T) {
 			}
 
 			assert.NoError(t, err)
-			assert.Equal(t, tc.want, err)
 		})
 	}
 }

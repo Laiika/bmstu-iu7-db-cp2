@@ -312,7 +312,6 @@ func TestEquipmentService_DeleteEquipment(t *testing.T) {
 		name         string
 		args         args
 		mockBehavior MockBehavior
-		want         error
 		wantErr      bool
 	}{
 		{
@@ -326,7 +325,6 @@ func TestEquipmentService_DeleteEquipment(t *testing.T) {
 				m.EXPECT().DeleteEquipment(args.ctx, args.client, args.id).
 					Return(nil)
 			},
-			want:    nil,
 			wantErr: false,
 		},
 		{
@@ -340,7 +338,6 @@ func TestEquipmentService_DeleteEquipment(t *testing.T) {
 				m.EXPECT().DeleteEquipment(args.ctx, args.client, args.id).
 					Return(ErrEquipmentNotFound)
 			},
-			want:    ErrEquipmentNotFound,
 			wantErr: true,
 		},
 	}
@@ -366,7 +363,6 @@ func TestEquipmentService_DeleteEquipment(t *testing.T) {
 			}
 
 			assert.NoError(t, err)
-			assert.Equal(t, tc.want, err)
 		})
 	}
 }

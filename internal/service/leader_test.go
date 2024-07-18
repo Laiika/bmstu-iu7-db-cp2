@@ -347,7 +347,6 @@ func TestLeaderService_DeleteLeader(t *testing.T) {
 		name         string
 		args         args
 		mockBehavior MockBehavior
-		want         error
 		wantErr      bool
 	}{
 		{
@@ -361,7 +360,6 @@ func TestLeaderService_DeleteLeader(t *testing.T) {
 				m.EXPECT().DeleteLeader(args.ctx, args.client, args.id).
 					Return(nil)
 			},
-			want:    nil,
 			wantErr: false,
 		},
 		{
@@ -375,7 +373,6 @@ func TestLeaderService_DeleteLeader(t *testing.T) {
 				m.EXPECT().DeleteLeader(args.ctx, args.client, args.id).
 					Return(ErrLeaderNotFound)
 			},
-			want:    ErrLeaderNotFound,
 			wantErr: true,
 		},
 	}
@@ -401,7 +398,6 @@ func TestLeaderService_DeleteLeader(t *testing.T) {
 			}
 
 			assert.NoError(t, err)
-			assert.Equal(t, tc.want, err)
 		})
 	}
 }
