@@ -112,7 +112,7 @@ create user member1 with PASSWORD 'member1' in role member;
 -- Руководитель
 create role leader inherit;
 grant member to leader;
-grant insert, update, delete on public.members to leader;
+grant insert, delete on public.members to leader;
 grant insert, update, delete on public.expeditions to leader;
 grant insert, delete on public.curators to leader;
 grant insert, delete on public.locations to leader;
@@ -132,33 +132,37 @@ create user admin1 with PASSWORD 'admin1' in role admin;
 
 -- ТРИГГЕР
 
-create or replace function check_analyzer()
-returns trigger
-as $$
+create or replace function check_expedition_dates()
+returns trigger as $$
+declare
+    start_d date;
+    end_d date;
+    overlapping_count integer;
 begin
-    if new.analyzer_id is null then
-        return new;
-end if;
+    select start_date, end_date
+    into start_d, end_d
+    from expeditions
+    where id = new.expedition_id;
 
-    if (select count(*) from sensors where analyzer_id = new.analyzer_id) >=
-    (select ats.max_sensors from analyzer_types ats join
-    (select type from gas_analyzers where id = new.analyzer_id) ga on ga.type = ats.name) then
-        raise exception 'gas analyzer with id % is already has max number of sensors', new.analyzer_id;
-end if;
+    select count(*)
+    into overlapping_count
+    from expeditions ex
+    join expeditions_members em on ex.id = em.expedition_id
+    where em.member_id = new.member_id and !(end_d <= ex.start_date || start_d >= ex.end_date);
 
-    if new.gas not in
-    (select gas from types_gases where analyzer_type in
-    (select type from gas_analyzers where id = new.analyzer_id)) then
-        raise exception 'gas analyzer cannot work with %', new.gas;
-end if;
+    if overlapping_count > 0 then
+        raise exception
+            'a expedition with the same member and overlapping date already exists';
+    end if;
 
-return new;
+    return new;
 end;
 $$ language plpgsql;
 
-create or replace trigger check_analyzer_trigger
-before insert or update on sensors
-                               for each row execute function check_analyzer();
+create or replace trigger check_expedition_dates_trigger
+before insert on expeditions_members
+for each row
+execute function check_expedition_dates();
 
 -- ИНДЕКСЫ
 
